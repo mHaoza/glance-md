@@ -7,6 +7,7 @@
 1. **检查发布配置**
    ```bash
    git status
+   pnpm check-build
    ```
 
 2. **确保工作目录干净**

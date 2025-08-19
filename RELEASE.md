@@ -72,6 +72,9 @@ GitHub Actions工作流文件位于 `.github/workflows/release.yaml`，包含：
 # 先构建应用
 pnpm tauri build
 
+# 然后检查构建产物
+pnpm check-build
+```
 
 这将显示所有构建产物的确切路径和文件大小。
 
