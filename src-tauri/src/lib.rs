@@ -59,12 +59,44 @@ fn read_or_init_files() -> Result<FilesPayload, String> {
     })
 }
 
+#[tauri::command]
+fn read_files() -> Result<FilesPayload, String> {
+    let exe_dir = std::env::current_exe()
+        .expect("Failed to get executable path")
+        .parent()
+        .expect("Failed to get executable directory")
+        .to_path_buf();
+
+    let md_path = exe_dir.join("data.md");
+    let css_path = exe_dir.join("style.css");
+
+    let markdown = if md_path.exists() {
+        fs::read_to_string(&md_path).map_err(|e| format!("read data.md failed: {}", e))?
+    } else {
+        DEFAULT_MD.to_string()
+    };
+
+    let style = if css_path.exists() {
+        fs::read_to_string(&css_path).map_err(|e| format!("read style.css failed: {}", e))?
+    } else {
+        DEFAULT_CSS.to_string()
+    };
+
+    Ok(FilesPayload {
+        markdown,
+        style,
+        base_dir: exe_dir.to_string_lossy().to_string(),
+        created_md: false,
+        created_css: false,
+    })
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_desktop_underlay::init())
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![greet, read_or_init_files])
+        .invoke_handler(tauri::generate_handler![greet, read_or_init_files, read_files])
         .setup(|app| {
             let window = app.get_webview_window("main").unwrap();
 
