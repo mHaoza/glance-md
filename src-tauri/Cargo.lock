@@ -1276,6 +1276,7 @@ dependencies = [
 name = "glance-md"
 version = "0.3.0"
 dependencies = [
+ "anyhow",
  "serde",
  "serde_json",
  "tauri",

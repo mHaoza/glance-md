@@ -4,6 +4,8 @@ use std::fs;
 use tauri::Manager;
 use tauri_plugin_desktop_underlay::DesktopUnderlayExt;
 
+mod tray;
+
 #[tauri::command]
 fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
@@ -110,6 +112,9 @@ pub fn run() {
                 std::thread::sleep(std::time::Duration::from_millis(500));
                 window_clone.show().unwrap();
             });
+
+            // 创建托盘图标
+            tray::Tray::create_tray(&app.handle()).expect("Failed to create tray");
 
             Ok(())
         })
